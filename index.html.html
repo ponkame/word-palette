@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>用語パレット｜Midi Design</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=Cormorant+Garamond:ital,wght@0,300;0,500;1,300&display=swap');
+
+:root {
+  --navy: #1A2640;
+  --gold: #B8922A;
+  --gold-light: #D4A843;
+  --cream: #F8F4EE;
+  --cream-dark: #EDE8DF;
+  --text: #2C2C2C;
+  --text-light: #7A7A7A;
+  --white: #FFFFFF;
+  --shadow: rgba(26,38,64,0.12);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--cream);
+  color: var(--text);
+  font-family: 'Noto Serif JP', serif;
+  min-height: 100vh;
+}
+
+/* Header */
+header {
+  background: var(--navy);
+  padding: 16px 20px 14px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px var(--shadow);
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  color: var(--gold-light);
+  letter-spacing: 0.08em;
+  font-style: italic;
+}
+
+.logo span {
+  font-style: normal;
+  font-size: 10px;
+  color: rgba(255,255,255,0.5);
+  display: block;
+  letter-spacing: 0.15em;
+  font-family: 'Noto Serif JP', serif;
+  margin-top: 1px;
+}
+
+.copy-count {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.05em;
+}
+
+/* Search */
+.search-wrap {
+  position: relative;
+}
+
+.search-wrap input {
+  width: 100%;
+  padding: 10px 16px 10px 38px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(184,146,42,0.3);
+  border-radius: 8px;
+  color: var(--white);
+  font-family: 'Noto Serif JP', serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-wrap input::placeholder { color: rgba(255,255,255,0.35); }
+.search-wrap input:focus { border-color: var(--gold); }
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255,255,255,0.4);
+  font-size: 15px;
+  pointer-events: none;
+}
+
+/* Category tabs */
+.tabs {
+  display: flex;
+  gap: 6px;
+  padding: 12px 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  background: var(--cream-dark);
+  border-bottom: 1px solid rgba(26,38,64,0.08);
+}
+.tabs::-webkit-scrollbar { display: none; }
+
+.tab {
+  white-space: nowrap;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: all 0.2s;
+  background: var(--white);
+  color: var(--text-light);
+  font-family: 'Noto Serif JP', serif;
+}
+
+.tab.active {
+  background: var(--navy);
+  color: var(--gold-light);
+  border-color: var(--navy);
+}
+
+.tab:not(.active):hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* Main content */
+main {
+  padding: 16px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--text-light);
+  margin: 16px 0 8px;
+  padding-left: 2px;
+}
+
+/* Word grid */
+.word-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+@media (min-width: 400px) {
+  .word-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.word-card {
+  background: var(--white);
+  border: 1px solid rgba(26,38,64,0.08);
+  border-radius: 10px;
+  padding: 12px 10px;
+  cursor: pointer;
+  transition: all 0.18s;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.word-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gold-light);
+  opacity: 0;
+  transition: opacity 0.15s;
+  border-radius: 10px;
+}
+
+.word-card:active::after { opacity: 0.12; }
+
+.word-card:hover {
+  border-color: var(--gold);
+  box-shadow: 0 2px 8px var(--shadow);
+  transform: translateY(-1px);
+}
+
+.word-card.copied {
+  border-color: var(--gold);
+  background: linear-gradient(135deg, #fffdf5, #fff8e8);
+}
+
+.word-main {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--navy);
+  letter-spacing: 0.03em;
+  display: block;
+  margin-bottom: 3px;
+}
+
+.word-yomi {
+  font-size: 10px;
+  color: var(--text-light);
+  letter-spacing: 0.06em;
+  display: block;
+}
+
+.copy-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.6);
+  background: var(--gold);
+  color: white;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s;
+  white-space: nowrap;
+  z-index: 2;
+  letter-spacing: 0.05em;
+}
+
+.word-card.copied .copy-badge {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* No results */
+.no-results {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-light);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--navy);
+  color: var(--gold-light);
+  padding: 10px 20px;
+  border-radius: 24px;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  opacity: 0;
+  transition: all 0.3s;
+  pointer-events: none;
+  z-index: 999;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(26,38,64,0.3);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Add button */
+.add-section {
+  margin-top: 24px;
+  padding: 16px;
+  background: var(--white);
+  border-radius: 12px;
+  border: 1.5px dashed rgba(26,38,64,0.15);
+}
+
+.add-section h3 {
+  font-size: 12px;
+  color: var(--text-light);
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+
+.add-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.add-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid rgba(26,38,64,0.15);
+  border-radius: 8px;
+  font-family: 'Noto Serif JP', serif;
+  font-size: 13px;
+  outline: none;
+  color: var(--text);
+  background: var(--cream);
+}
+
+.add-input:focus { border-color: var(--gold); }
+
+.add-btn {
+  padding: 8px 16px;
+  background: var(--navy);
+  color: var(--gold-light);
+  border: none;
+  border-radius: 8px;
+  font-family: 'Noto Serif JP', serif;
+  font-size: 13px;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: background 0.2s;
+}
+.add-btn:active { background: #2a3a5a; }
+
+.footer-note {
+  text-align: center;
+  font-size: 10px;
+  color: var(--text-light);
+  padding: 24px 16px 32px;
+  letter-spacing: 0.06em;
+  opacity: 0.7;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="logo">
+      Midi Design
+      <span>用語コピーパレット</span>
+    </div>
+    <div class="copy-count" id="copyCount">本日 0回コピー</div>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="用語を検索（例：がいこう、LINE…）" oninput="handleSearch()">
+  </div>
+</header>
+
+<div class="tabs" id="tabs"></div>
+
+<main>
+  <div id="wordContainer"></div>
+
+  <div class="add-section">
+    <h3>＋ 用語を追加する</h3>
+    <div class="add-row">
+      <input class="add-input" id="newWord" placeholder="表示する用語（例：外構）" maxlength="30">
+      <input class="add-input" id="newYomi" placeholder="よみ（例：がいこう）" maxlength="30">
+    </div>
+    <div class="add-row">
+      <select class="add-input" id="newCategory">
+        <option value="">カテゴリを選択</option>
+      </select>
+      <button class="add-btn" onclick="addWord()">追加</button>
+    </div>
+  </div>
+
+  <div class="footer-note">タップでコピー → チャットやメモに貼り付けてください</div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const WORD_DATA = {
+  "よく使う": [
+    { word: "外構", yomi: "がいこう" },
+    { word: "間取り", yomi: "まどり" },
+    { word: "動線", yomi: "どうせん" },
+    { word: "建蔽率", yomi: "けんぺいりつ" },
+    { word: "容積率", yomi: "ようせきりつ" },
+    { word: "吹き抜け", yomi: "ふきぬけ" },
+    { word: "軒天", yomi: "のきてん" },
+    { word: "廻り縁", yomi: "まわりぶち" },
+    { word: "敷地", yomi: "しきち" },
+    { word: "地盤", yomi: "じばん" },
+    { word: "棟上げ", yomi: "むねあげ" },
+    { word: "上棟式", yomi: "じょうとうしき" },
+  ],
+  "英語・カタカナ": [
+    { word: "Cowork", yomi: "こわーく" },
+    { word: "LINE", yomi: "らいん" },
+    { word: "Instagram", yomi: "いんすたぐらむ" },
+    { word: "ChatGPT", yomi: "ちゃっとじーぴーてぃ" },
+    { word: "Canva", yomi: "きゃんば" },
+    { word: "Google", yomi: "ぐーぐる" },
+    { word: "Calendly", yomi: "かれんどりー" },
+    { word: "Timerex", yomi: "たいめれっくす" },
+    { word: "PDF", yomi: "ぴーでぃーえふ" },
+    { word: "SNS", yomi: "えすえぬえす" },
+    { word: "DM", yomi: "でぃーえむ" },
+    { word: "AI", yomi: "えーあい" },
+  ],
+  "建築構造": [
+    { word: "矩計図", yomi: "かなばかりず" },
+    { word: "展開図", yomi: "てんかいず" },
+    { word: "立面図", yomi: "りつめんず" },
+    { word: "伏図", yomi: "ふせず" },
+    { word: "詳細図", yomi: "しょうさいず" },
+    { word: "梁", yomi: "はり" },
+    { word: "柱", yomi: "はしら" },
+    { word: "筋交い", yomi: "すじかい" },
+    { word: "土台", yomi: "どだい" },
+    { word: "基礎", yomi: "きそ" },
+    { word: "耐力壁", yomi: "たいりょくかべ" },
+    { word: "剛床", yomi: "ごうゆか" },
+  ],
+  "内装・素材": [
+    { word: "羽目板", yomi: "はめいた" },
+    { word: "珪藻土", yomi: "けいそうど" },
+    { word: "漆喰", yomi: "しっくい" },
+    { word: "無垢材", yomi: "むくざい" },
+    { word: "突き板", yomi: "つきいた" },
+    { word: "框", yomi: "かまち" },
+    { word: "幅木", yomi: "はばき" },
+    { word: "鴨居", yomi: "かもい" },
+    { word: "敷居", yomi: "しきい" },
+    { word: "長押", yomi: "なげし" },
+    { word: "欄間", yomi: "らんま" },
+    { word: "タイル目地", yomi: "たいるめじ" },
+  ],
+  "設備・省エネ": [
+    { word: "UA値", yomi: "ゆーえーち" },
+    { word: "C値", yomi: "しーち" },
+    { word: "断熱等級", yomi: "だんねつとうきゅう" },
+    { word: "ZEH", yomi: "ぜっち" },
+    { word: "BELS", yomi: "べるす" },
+    { word: "第一種換気", yomi: "だいいっしゅかんき" },
+    { word: "全館空調", yomi: "ぜんかんくうちょう" },
+    { word: "床下暖房", yomi: "ゆかしただんぼう" },
+    { word: "太陽光発電", yomi: "たいようこうはつでん" },
+    { word: "蓄電池", yomi: "ちくでんち" },
+    { word: "V2H", yomi: "ぶいつーえいち" },
+    { word: "ヒートポンプ", yomi: "ひーとぽんぷ" },
+  ],
+  "外装・外構": [
+    { word: "サイディング", yomi: "さいでぃんぐ" },
+    { word: "ガルバリウム", yomi: "がるばりうむ" },
+    { word: "外壁通気層", yomi: "がいへきつうきそう" },
+    { word: "雨樋", yomi: "あまとい" },
+    { word: "破風板", yomi: "はふいた" },
+    { word: "笠木", yomi: "かさぎ" },
+    { word: "土間コンクリート", yomi: "どまこんくりーと" },
+    { word: "カーポート", yomi: "かーぽーと" },
+    { word: "フェンス", yomi: "ふぇんす" },
+    { word: "植栽", yomi: "しょくさい" },
+    { word: "境界標", yomi: "きょうかいひょう" },
+    { word: "セットバック", yomi: "せっとばっく" },
+  ],
+  "業務・書類": [
+    { word: "確認申請", yomi: "かくにんしんせい" },
+    { word: "検査済証", yomi: "けんさずみしょう" },
+    { word: "建築基準法", yomi: "けんちくきじゅんほう" },
+    { word: "用途地域", yomi: "ようとちいき" },
+    { word: "防火地域", yomi: "ぼうかちいき" },
+    { word: "長期優良住宅", yomi: "ちょうきゆうりょうじゅうたく" },
+    { word: "住宅性能評価", yomi: "じゅうたくせいのうひょうか" },
+    { word: "フラット35", yomi: "ふらっとさんじゅうご" },
+    { word: "地盤調査", yomi: "じばんちょうさ" },
+    { word: "瑕疵担保保険", yomi: "かしたんぽほけん" },
+    { word: "アフターサービス", yomi: "あふたーさーびす" },
+    { word: "引き渡し", yomi: "ひきわたし" },
+  ],
+};
+
+let todayCopyCount = parseInt(localStorage.getItem('copyCount_' + today()) || '0');
+let userWords = JSON.parse(localStorage.getItem('userWords') || '[]');
+let currentCategory = 'よく使う';
+let searchMode = false;
+
+function today() {
+  return new Date().toDateString();
+}
+
+function init() {
+  buildTabs();
+  renderWords(currentCategory);
+  updateCopyCount();
+  buildCategorySelect();
+}
+
+function buildTabs() {
+  const tabs = document.getElementById('tabs');
+  const categories = ['よく使う', '英語・カタカナ', '建築構造', '内装・素材', '設備・省エネ', '外装・外構', '業務・書類', 'マイ用語'];
+  tabs.innerHTML = '';
+  categories.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (cat === currentCategory ? ' active' : '');
+    btn.textContent = cat;
+    btn.onclick = () => {
+      currentCategory = cat;
+      searchMode = false;
+      document.getElementById('searchInput').value = '';
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      renderWords(cat);
+    };
+    tabs.appendChild(btn);
+  });
+}
+
+function buildCategorySelect() {
+  const sel = document.getElementById('newCategory');
+  const cats = Object.keys(WORD_DATA);
+  cats.push('マイ用語');
+  sel.innerHTML = '<option value="">カテゴリを選択</option>';
+  cats.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c;
+    opt.textContent = c;
+    sel.appendChild(opt);
+  });
+}
+
+function getAllWords() {
+  const all = [];
+  Object.entries(WORD_DATA).forEach(([cat, words]) => {
+    words.forEach(w => all.push({ ...w, category: cat }));
+  });
+  userWords.forEach(w => all.push({ ...w, category: 'マイ用語' }));
+  return all;
+}
+
+function getWordsForCategory(cat) {
+  if (cat === 'マイ用語') return userWords;
+  return WORD_DATA[cat] || [];
+}
+
+function renderWords(cat) {
+  const container = document.getElementById('wordContainer');
+  const words = getWordsForCategory(cat);
+
+  if (words.length === 0) {
+    container.innerHTML = '<div class="no-results">まだ用語がありません<br>下の「＋追加」から登録してください</div>';
+    return;
+  }
+
+  container.innerHTML = '<div class="section-label">' + cat + '（' + words.length + '件）</div><div class="word-grid" id="mainGrid"></div>';
+  const grid = document.getElementById('mainGrid');
+  words.forEach(w => grid.appendChild(createCard(w)));
+}
+
+function handleSearch() {
+  const q = document.getElementById('searchInput').value.trim();
+  const container = document.getElementById('wordContainer');
+
+  if (!q) {
+    searchMode = false;
+    renderWords(currentCategory);
+    return;
+  }
+
+  searchMode = true;
+  const all = getAllWords();
+  const results = all.filter(w =>
+    w.word.includes(q) || (w.yomi && w.yomi.includes(q))
+  );
+
+  if (results.length === 0) {
+    container.innerHTML = '<div class="no-results">「' + q + '」に一致する用語が見つかりません</div>';
+    return;
+  }
+
+  container.innerHTML = '<div class="section-label">「' + q + '」の検索結果（' + results.length + '件）</div><div class="word-grid" id="mainGrid"></div>';
+  const grid = document.getElementById('mainGrid');
+  results.forEach(w => grid.appendChild(createCard(w)));
+}
+
+function createCard(w) {
+  const card = document.createElement('div');
+  card.className = 'word-card';
+  card.innerHTML =
+    '<span class="word-main">' + w.word + '</span>' +
+    '<span class="word-yomi">' + (w.yomi || '') + '</span>' +
+    '<span class="copy-badge">コピー！</span>';
+  card.onclick = () => copyWord(w.word, card);
+  return card;
+}
+
+function copyWord(text, card) {
+  navigator.clipboard.writeText(text).then(() => {
+    card.classList.add('copied');
+    setTimeout(() => card.classList.remove('copied'), 1000);
+    todayCopyCount++;
+    localStorage.setItem('copyCount_' + today(), todayCopyCount);
+    updateCopyCount();
+    showToast('「' + text + '」をコピーしました');
+  }).catch(() => {
+    const el = document.createElement('textarea');
+    el.value = text;
+    el.style.position = 'fixed';
+    el.style.opacity = '0';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    card.classList.add('copied');
+    setTimeout(() => card.classList.remove('copied'), 1000);
+    showToast('「' + text + '」をコピーしました');
+  });
+}
+
+function updateCopyCount() {
+  document.getElementById('copyCount').textContent = '本日 ' + todayCopyCount + '回コピー';
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function addWord() {
+  const word = document.getElementById('newWord').value.trim();
+  const yomi = document.getElementById('newYomi').value.trim();
+  const cat = document.getElementById('newCategory').value || 'マイ用語';
+
+  if (!word) { showToast('用語を入力してください'); return; }
+
+  if (cat === 'マイ用語') {
+    userWords.push({ word, yomi });
+    localStorage.setItem('userWords', JSON.stringify(userWords));
+  } else {
+    if (!WORD_DATA[cat]) WORD_DATA[cat] = [];
+    WORD_DATA[cat].push({ word, yomi });
+  }
+
+  document.getElementById('newWord').value = '';
+  document.getElementById('newYomi').value = '';
+
+  showToast('「' + word + '」を追加しました');
+
+  if (!searchMode) renderWords(currentCategory);
+}
+
+init();
+</script>
+
+</body>
+</html>
